@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Network</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Form Đăng ký -->
+    <div class="form-container" id="register-form">
+      <h2>Đăng ký</h2>
+      <form id="register">
+        <input type="text" id="reg-username" placeholder="Tên người dùng" required>
+        <input type="email" id="reg-email" placeholder="Email" required>
+        <input type="password" id="reg-password" placeholder="Mật khẩu" required>
+        <button type="submit">Đăng ký</button>
+      </form>
+      <p>Đã có tài khoản? <a href="#" id="show-login">Đăng nhập</a></p>
+      <div id="reg-message"></div>
+    </div>
+
+    <!-- Form Đăng nhập -->
+    <div class="form-container" id="login-form" style="display: none;">
+      <h2>Đăng nhập</h2>
+      <form id="login">
+        <input type="email" id="login-email" placeholder="Email" required>
+        <input type="password" id="login-password" placeholder="Mật khẩu" required>
+        <button type="submit">Đăng nhập</button>
+      </form>
+      <p>Chưa có tài khoản? <a href="#" id="show-register">Đăng ký</a></p>
+      <p><a href="#" id="show-forgot">Quên mật khẩu?</a></p>
+      <div id="login-message"></div>
+    </div>
+
+    <!-- Form Quên mật khẩu -->
+    <div class="form-container" id="forgot-form" style="display: none;">
+      <h2>Quên mật khẩu</h2>
+      <form id="forgot">
+        <input type="email" id="forgot-email" placeholder="Nhập email của bạn" required>
+        <button type="submit">Gửi yêu cầu</button>
+      </form>
+      <p><a href="#" id="back-to-login">Quay lại đăng nhập</a></p>
+      <div id="forgot-message"></div>
+    </div>
+  </div>
+
+  <script>
+    // Chuyển đổi giữa các form
+    document.getElementById('show-login').addEventListener('click', function (e) {
+      e.preventDefault();
+      document.getElementById('register-form').style.display = 'none';
+      document.getElementById('forgot-form').style.display = 'none';
+      document.getElementById('login-form').style.display = 'block';
+    });
+
+    document.getElementById('show-register').addEventListener('click', function (e) {
+      e.preventDefault();
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('forgot-form').style.display = 'none';
+      document.getElementById('register-form').style.display = 'block';
+    });
+
+    document.getElementById('show-forgot').addEventListener('click', function (e) {
+      e.preventDefault();
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('register-form').style.display = 'none';
+      document.getElementById('forgot-form').style.display = 'block';
+    });
+
+    document.getElementById('back-to-login').addEventListener('click', function (e) {
+      e.preventDefault();
+      document.getElementById('forgot-form').style.display = 'none';
+      document.getElementById('register-form').style.display = 'none';
+      document.getElementById('login-form').style.display = 'block';
+    });
+
+    // Xử lý đăng ký
+    document.getElementById('register').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('reg-username').value;
+      const email = document.getElementById('reg-email').value;
+      const password = document.getElementById('reg-password').value;
+    
+      try {
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password }),
+        });
+        const data = await response.json();
+    
+        if (response.ok) {
+          document.getElementById('reg-message').style.color = 'green';
+          document.getElementById('reg-message').textContent = 'Đăng ký thành công!';
+          setTimeout(() => {
+            document.getElementById('show-login').click();
+          }, 1000);
+        } else {
+          document.getElementById('reg-message').textContent = data.message;
+        }
+      } catch (error) {
+        document.getElementById('reg-message').textContent = 'Đã có lỗi xảy ra!';
+      }
+    });
+    
+    // Xử lý đăng nhập
+    document.getElementById('login').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+    
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await response.json();
+    
+        if (response.ok) {
+          document.getElementById('login-message').style.color = 'green';
+          document.getElementById('login-message').textContent = 'Đăng nhập thành công!';
+          localStorage.setItem('token', data.token);
+          setTimeout(() => {
+            alert('Chào mừng ' + data.user.username + '!');
+          }, 1000);
+        } else {
+          document.getElementById('login-message').textContent = data.message;
+        }
+      } catch (error) {
+        document.getElementById('login-message').textContent = 'Đã có lỗi xảy ra!';
+      }
+    });
+
+    // Xử lý quên mật khẩu
+    document.getElementById('forgot').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('forgot-email').value;
+    
+      try {
+        const response = await fetch('/api/auth/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+        const data = await response.json();
+    
+        if (response.ok) {
+          document.getElementById('forgot-message').style.color = 'green';
+          document.getElementById('forgot-message').textContent = data.message;
+        } else {
+          document.getElementById('forgot-message').style.color = 'red';
+          document.getElementById('forgot-message').textContent = data.message;
+        }
+      } catch (error) {
+        document.getElementById('forgot-message').style.color = 'red';
+        document.getElementById('forgot-message').textContent = 'Đã có lỗi xảy ra!';
+      }
+    });
+  </script>
+</body>
+</html>
