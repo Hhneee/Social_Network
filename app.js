@@ -23,7 +23,7 @@ app.use('/api/auth', authRoutes);
 
 // Route phục vụ tệp index.html tại đường dẫn gốc
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'auth/auth.html'));
 });
 
 // Khởi động server trên PORT được khai báo trong .env hoặc mặc định là 3000

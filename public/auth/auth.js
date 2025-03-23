@@ -1,58 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Social Network</title>
-  <link rel="stylesheet" href="/style.css">
-</head>
-<body>
-  <div class="container">
-    <!-- Form Đăng ký -->
-    <div class="form-container" id="register-form">
-      <h2>Đăng ký</h2>
-      <form id="register">
-        <input type="text" id="reg-username" placeholder="Tên người dùng" required>
-        <input type="email" id="reg-email" placeholder="Email" required>
-        <input type="password" id="reg-password" placeholder="Mật khẩu" required>
-        <button type="submit">Đăng ký</button>
-      </form>
-      <p>Đã có tài khoản? <a href="#" id="show-login">Đăng nhập</a></p>
-      <div id="reg-message"></div>
-    </div>
 
-    <!-- Form Đăng nhập -->
-    <div class="form-container" id="login-form" style="display: none;">
-      <h2>Đăng nhập</h2>
-      <form id="login">
-        <input type="email" id="login-email" placeholder="Email" required>
-        <input type="password" id="login-password" placeholder="Mật khẩu" required>
-        <button type="submit">Đăng nhập</button>
-      </form>
-      <p>Chưa có tài khoản? <a href="#" id="show-register">Đăng ký</a></p>
-      <p><a href="#" id="show-forgot">Quên mật khẩu?</a></p>
-      <div id="login-message"></div>
-    </div>
-
-    <!-- Form Quên mật khẩu -->
-    <div class="form-container" id="forgot-form" style="display: none;">
-      <h2>Quên mật khẩu</h2>
-      <form id="forgot">
-        <input type="email" id="forgot-email" placeholder="Nhập email của bạn" required>
-        <button type="submit">Gửi yêu cầu</button>
-      </form>
-      <p><a href="#" id="back-to-login">Quay lại đăng nhập</a></p>
-      <div id="forgot-message"></div>
-    </div>
-  </div>
-
-  <script>
-    // Chuyển đổi giữa các form
     document.getElementById('show-login').addEventListener('click', function (e) {
       e.preventDefault();
       document.getElementById('register-form').style.display = 'none';
       document.getElementById('forgot-form').style.display = 'none';
       document.getElementById('login-form').style.display = 'block';
+      document.getElementById('reset-form').style.display = 'none';
     });
 
     document.getElementById('show-register').addEventListener('click', function (e) {
@@ -60,6 +12,7 @@
       document.getElementById('login-form').style.display = 'none';
       document.getElementById('forgot-form').style.display = 'none';
       document.getElementById('register-form').style.display = 'block';
+      document.getElementById('reset-form').style.display = 'none';
     });
 
     document.getElementById('show-forgot').addEventListener('click', function (e) {
@@ -67,6 +20,7 @@
       document.getElementById('login-form').style.display = 'none';
       document.getElementById('register-form').style.display = 'none';
       document.getElementById('forgot-form').style.display = 'block';
+      document.getElementById('reset-form').style.display = 'none';
     });
 
     document.getElementById('back-to-login').addEventListener('click', function (e) {
@@ -74,6 +28,15 @@
       document.getElementById('forgot-form').style.display = 'none';
       document.getElementById('register-form').style.display = 'none';
       document.getElementById('login-form').style.display = 'block';
+      document.getElementById('reset-form').style.display = 'none';
+    });
+
+    document.getElementById('back-to-forgot').addEventListener('click', function (e) {
+      e.preventDefault();
+      document.getElementById('reset-form').style.display = 'none';
+      document.getElementById('forgot-form').style.display = 'block';
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('register-form').style.display = 'none';
     });
 
     // Xử lý đăng ký
@@ -133,32 +96,29 @@
         document.getElementById('login-message').textContent = 'Đã có lỗi xảy ra!';
       }
     });
+// Xử lý quên mật khẩu
+document.getElementById('forgot').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('forgot-email').value;
 
-    // Xử lý quên mật khẩu
-    document.getElementById('forgot').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('forgot-email').value;
-    
-      try {
-        const response = await fetch('/api/auth/forgot-password', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email }),
-        });
-        const data = await response.json();
-    
-        if (response.ok) {
-          document.getElementById('forgot-message').style.color = 'green';
-          document.getElementById('forgot-message').textContent = data.message;
-        } else {
-          document.getElementById('forgot-message').style.color = 'red';
-          document.getElementById('forgot-message').textContent = data.message;
-        }
-      } catch (error) {
-        document.getElementById('forgot-message').style.color = 'red';
-        document.getElementById('forgot-message').textContent = 'Đã có lỗi xảy ra!';
-      }
+  try {
+    const response = await fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
     });
-  </script>
-</body>
-</html>
+    const data = await response.json();
+
+    if (response.ok) {
+      document.getElementById('forgot-message').style.color = 'green';
+      document.getElementById('forgot-message').textContent = data.message;
+    } else {
+      document.getElementById('forgot-message').style.color = 'red';
+      document.getElementById('forgot-message').textContent = data.message;
+    }
+  } catch (error) {
+    document.getElementById('forgot-message').style.color = 'red';
+    document.getElementById('forgot-message').textContent = 'Đã có lỗi xảy ra!';
+  }
+});
+
