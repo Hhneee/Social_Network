@@ -69,33 +69,33 @@
     });
     
     // Xử lý đăng nhập
-    document.getElementById('login').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
-    
-      try {
-        const response = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password }),
-        });
-        const data = await response.json();
-    
-        if (response.ok) {
-          document.getElementById('login-message').style.color = 'green';
-          document.getElementById('login-message').textContent = 'Đăng nhập thành công!';
-          localStorage.setItem('token', data.token);
-          setTimeout(() => {
-            alert('Chào mừng ' + data.user.username + '!');
-          }, 1000);
-        } else {
-          document.getElementById('login-message').textContent = data.message;
-        }
-      } catch (error) {
-        document.getElementById('login-message').textContent = 'Đã có lỗi xảy ra!';
-      }
+document.getElementById('login').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+
+  try {
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
     });
+    const data = await response.json();
+
+    if (response.ok) {
+      document.getElementById('login-message').style.color = 'green';
+      document.getElementById('login-message').textContent = 'Đăng nhập thành công!';
+      localStorage.setItem('token', data.token);
+      setTimeout(() => {
+        window.location.href = '/newfeed/newfeed.html'; // Đường dẫn đến trang cần chuyển
+      }, 1000);
+  } else {
+    document.getElementById('login-message').textContent = data.message;
+  }
+} catch (error) {
+  document.getElementById('login-message').textContent = 'Đã có lỗi xảy ra!';
+}
+});
 // Xử lý quên mật khẩu
 document.getElementById('forgot').addEventListener('submit', async (e) => {
   e.preventDefault();

@@ -36,7 +36,7 @@ class AuthService {
     }
 
     // Bạn có thể giữ chức năng tạo token ở đây nếu cần
-    const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ _id: user._id, username: user.username }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
 

@@ -1,0 +1,90 @@
+/* public/appbar/appbar.css */
+.appbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #707070;
+    color: white;
+    padding: 10px 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .appbar-left {
+    flex: 1;
+  }
+  
+  .appbar-logo {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+  }
+  
+  .appbar-center {
+    flex: 2;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .appbar-right {
+    margin-right: 30px;
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+  }
+  
+  .appbar-link {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+  
+  .appbar-link:hover {
+    color: #e0e0e0;
+  }
+  
+  .search-form {
+    width: 100%;
+    max-width: 400px;
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 5px 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .search-form input[type="text"] {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    outline: none;
+  }
+  
+  .search-form input[type="text"]::placeholder {
+    color: #999;
+  }
+  
+  .search-form button {
+    background-color: #1557b0;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+  }
+  
+  .search-form button:hover {
+    background-color: #0d47a1;
+  }

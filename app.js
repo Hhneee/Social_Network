@@ -6,6 +6,7 @@ require('dotenv').config();
 // Import các file cấu hình và các route
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
+const postRoutes = require('./routes/postRoutes');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Định nghĩa các route cho API authentication
 app.use('/api/auth', authRoutes);
+app.use('/api/posts', postRoutes);
 
 // Route phục vụ tệp index.html tại đường dẫn gốc
 app.get('/', (req, res) => {
