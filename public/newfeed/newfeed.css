@@ -1,128 +1,202 @@
 /* public/newfeed/newfeed.css */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f0f2f5;
-    color: #333;
-  }
-  
-  .main-content {
-    margin-top: 70px; /* Khoảng cách để tránh bị AppBar che */
-    padding: 20px;
-  }
-  
-  .post-list {
-    max-width: 800px;
-    margin: 0 auto;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-  }
-  
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f2f5;
+  color: #333;
+}
 
-  
-  .post {
-    border: 1px solid #707070;
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 20px;
-    background-color: #fafafa;
-    transition: box-shadow 0.3s ease;
-  }
-  
-  .post:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  }
-  
-  .post p {
-    margin: 5px 0;
-    font-size: 16px;
-    line-height: 1.5;
-  }
-  
-  .post p strong {
-    color: #707070;
-    font-weight: 600;
-  }
-  
-  .media-item {
-    max-width: 100%;
-    margin: 10px 0;
-    border-radius: 5px;
-    display: block;
-  }
-  
-  .post-stats {
-    font-size: 14px;
-    color: #666;
-    margin: 10px 0;
-    border-top: 1px solid #e0e0e0;
-    padding-top: 10px;
-  }
-  
-  .post-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-  }
-  
-  .post-actions button {
-    background-color: #1a73e8;
-    color: white;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s;
-  }
-  
-  .post-actions button:hover {
-    background-color: #1557b0;
-  }
-  
-  .comment-form {
-    margin-top: 10px;
-    display: none;
-  }
-  
-  .comment-form textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    resize: vertical;
-    font-size: 14px;
-  }
-  
-  .comment-form button {
-    background-color: #28a745;
-    color: white;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 5px;
-  }
-  
-  .comment-form button:hover {
-    background-color: #218838;
-  }
-  
-  .comment {
-    margin-top: 10px;
-    padding: 8px;
-    background-color: #f5f5f5;
-    border-radius: 5px;
-  }
-  
-  .comment p {
-    margin: 0;
-    font-size: 14px;
-  }
-  
-  .comment p strong {
-    color: #333;
-  }
+.main-content {
+  margin-top: 70px;
+  padding: 20px;
+}
+
+.post-list {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #faf6f6;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.post {
+  border: 1px solid #707070;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #fafafa;
+  transition: box-shadow 0.3s ease;
+}
+
+.postimage {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.postimage img {
+  max-width: 50px;
+  height: auto;
+  border-radius: 5px;
+}
+
+.postimage .userandtime {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.postimage h4 {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.postimage h6 {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.post:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.media-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.media-item {
+  max-width: 300px; /* Giới hạn chiều rộng tối đa */
+  max-height: 300px; /* Giới hạn chiều cao tối đa */
+  width: 100%;
+  height: auto;
+  object-fit: cover; /* Giữ tỷ lệ, cắt phần thừa */
+  border-radius: 5px;
+  display: block;
+}
+
+.media-item[controls] {
+  object-fit: contain; /* Video hiển thị đầy đủ */
+}
+
+.startline {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #65676b;
+  margin: 10px 0;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 10px;
+}
+
+.post-like {
+  font-weight: 500;
+}
+
+.post-commentshare {
+  font-weight: 500;
+}
+
+.post-actions {
+  display: flex;
+  justify-content: space-around;
+  gap: 10px;
+  margin-top: 10px;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 10px;
+}
+
+.post-actions button {
+  background-color: transparent;
+  color: #65676b;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.post-actions button:hover {
+  background-color: #e4e6eb;
+  color: #050505;
+}
+
+.post-actions .like-btn.liked {
+  color: #1877f2; /* Màu xanh khi đã thích */
+}
+
+.comment-form {
+  margin-top: 10px;
+  display: none; /* Ẩn mặc định */
+}
+
+.comment-form.active {
+  display: block; /* Hiển thị khi có class active */
+}
+
+.comment-form textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  resize: none;
+  font-size: 14px;
+  background-color: #f0f2f5;
+}
+
+.comment-form button {
+  background-color: #1877f2;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-top: 5px;
+  font-weight: 600;
+}
+
+.comment-form button:hover {
+  background-color: #1557b0;
+}
+
+.comment-section {
+  margin-top: 10px;
+}
+
+.comment-section p {
+  margin: 5px 0;
+  padding: 8px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.comment-section p strong {
+  color: #333;
+}
+
+.view-more {
+  display: block;
+  margin-top: 10px;
+  color: #65676b;
+  font-size: 14px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.view-more:hover {
+  text-decoration: underline;
+}

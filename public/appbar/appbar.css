@@ -1,55 +1,61 @@
-/* public/appbar/appbar.css */
 .appbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #707070;
-    color: white;
-    padding: 10px 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 1000;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(45deg, #00A06B, #67BF7F, #85c1e9);
+  background-size: 200% 200%;
+  animation: toneChange 8s ease infinite;
+  color: white;
+  padding: 10px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+}
+
+@keyframes toneChange {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
   .appbar-left {
+    margin-left: 15px;
     flex: 1;
   }
   
   .appbar-logo {
     margin: 0;
     font-size: 24px;
-    font-weight: 600;
+    font-weight: 6000;
   }
   
   .appbar-center {
+    margin-left: -50px;
+    margin-right: 800px;
     flex: 2;
     display: flex;
-    justify-content: center;
+    justify-content: left;
   }
   
-  .appbar-right {
-    margin-right: 30px;
-    flex: 1;
-    display: flex;
-    justify-content: flex-end;
-    gap: 20px;
-  }
-  
-  .appbar-link {
+  .appbar-right .appbar-link {
     color: white;
     text-decoration: none;
     font-size: 16px;
     font-weight: 500;
-    transition: color 0.3s;
-  }
+    transition: all 0.3s ease; /* Thêm transition cho tất cả thay đổi */
+}
+
+.appbar-right .appbar-link:hover {
+    color: #e0e0e0; /* Màu sáng hơn khi hover */
+    transform: scale(1.1); /* Phóng to nhẹ nhàng */
+}
   
-  .appbar-link:hover {
-    color: #e0e0e0;
+
+  .appbar-right {
+    margin-right: 30px;
   }
-  
   .search-form {
     width: 100%;
     max-width: 400px;
@@ -58,7 +64,7 @@
     padding: 5px 10px;
     display: flex;
     gap: 10px;
-    align-items: center;
+    align-items: left;
   }
   
   .search-form input[type="text"] {
@@ -75,7 +81,7 @@
   }
   
   .search-form button {
-    background-color: #1557b0;
+    background-color: #4ecdc4;
     color: white;
     padding: 8px 15px;
     border: none;
