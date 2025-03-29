@@ -29,15 +29,18 @@ class PostService {
     }
 
     //them binh luan bai viet
-    async commentPost(userId, postId, {content}) {
+    async commentPost(userId, postId, { content }) {
         const post = await Post.findById(postId);
         if (!post) {
-            throw new Error('Bài viết không tồn tại');
+          throw new Error('Bài viết không tồn tại');
         }
-        post.comments.push({user: userId, content});
+        if (!content || content.trim().length === 0) {
+          throw new Error('Nội dung bình luận không được để trống');
+        }
+        post.comments.push({ user: userId, content });
         await post.save();
         return post;
-    }
+      }
 
     //chia se bai viet
     async sharePost(userId, postId) {
@@ -60,7 +63,17 @@ class PostService {
             .sort({createdAt: -1});
         return posts;
     }
+    async getPostComments(postId) {
+        const post = await Post.findById(postId)
+          .populate('comments.user', 'username')
+          .select('comments');
+        if (!post) {
+          throw new Error('Bài viết không tồn tại');
+        }
+        return post;
+      }
 }
+
 
 module.exports = new PostService();
 

@@ -55,4 +55,14 @@ const getPosts = async (req, res) => {
     }
 }
 
-module.exports = { createPost, likePost, commentPost, sharePost, getPosts };
+const getPostComments = async (req, res) => {
+    try {
+      const { postId } = req.params;
+      const post = await PostService.getPostComments(postId); // Thêm hàm này vào PostService
+      res.status(200).json(post.comments);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  };
+  
+module.exports = { createPost, likePost, commentPost, sharePost, getPosts, getPostComments };
