@@ -4,6 +4,7 @@ const authController = require('../controllers/authController');
 
 router.post('/register', authController.register);
 router.post('/login', authController.login);
-router.post('/forgot-password', authController.forgotPassword); // Thêm route forgot password
+router.post('/forgot-password', authController.forgotPassword); 
+router.get('/users', authController.getAllUsers); // Route mới để lấy danh sách người dùng
 
 module.exports = router;

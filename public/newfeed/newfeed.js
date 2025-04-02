@@ -73,7 +73,7 @@ function renderPosts(posts) {
         </div>
         <div class="comment-section" id="comments-${post._id}">
           ${visibleComments.map(comment => 
-            `<p><strong>${comment.user.username}</strong>: ${comment.content}</p>`
+            `<p><img src="${post.user.avatar || 'https://cbam.edu.vn/wp-content/uploads/2024/10/avatar-fb-mac-dinh-46nlrTXx.jpg'}"<strong>${comment.user.username}</strong>: ${comment.content}</p>`
           ).join('')}
           ${hasMoreComments ? `
             <a href="#" class="view-more" onclick="showAllComments('${post._id}', event)">Xem thêm (${post.comments.length - 2} bình luận)</a>

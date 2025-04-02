@@ -36,13 +36,8 @@ const forgotPassword = async (req, res) => {
   try {
     console.log('Forgot password request received:', req.body);
     const { email } = req.body;
-
-    // Gọi hàm service để xử lý logic: kiểm tra email, tạo token và gửi email reset
-    // Trong authService.forgotPasswordUser, bạn cũng cần phải xử lý theo cách bảo mật,
-    // ví dụ: nếu email không tồn tại thì vẫn không báo lỗi, để không cho người ngoài biết.
     await authService.forgotPasswordUser({ email });
 
-    // Trả về thông báo chung, không tiết lộ email đó có tồn tại hay không
     res.status(200).json({ 
       message: 'Nếu email có trong hệ thống, bạn sẽ nhận được hướng dẫn đặt lại mật khẩu.' 
     });
@@ -52,4 +47,28 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-module.exports = { register, login, forgotPassword };
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await authService.getAllUsers();
+    
+    // Trả về danh sách user với các trường cơ bản
+    const userList = users.map(user => ({
+      id: user._id,
+      username: user.username,
+      email: user.email,
+    }));
+
+    res.status(200).json({
+      success: true,
+      data: userList,
+    });
+  } catch (error) {
+    console.log('Error in getAllUsers:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Lỗi server khi lấy danh sách user',
+    });
+  }
+};
+
+module.exports = { register, login, forgotPassword, getAllUsers };

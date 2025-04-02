@@ -34,8 +34,6 @@ class AuthService {
     if (!isMatch) {
       throw new Error('Invalid email or password');
     }
-
-    // Bạn có thể giữ chức năng tạo token ở đây nếu cần
     const token = jwt.sign({ _id: user._id, username: user.username }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
@@ -53,8 +51,8 @@ class AuthService {
     }
 
     // Tạo mã OTP 6 chữ số ngẫu nhiên và thời gian hết hạn (5 phút)
-    const otp = crypto.randomInt(100000, 999999).toString(); // OTP dạng chuỗi
-    const otpExpiresIn = new Date(Date.now() + 5 * 60 * 1000); // Thời gian hết hạn (5 phút)
+    const otp = crypto.randomInt(100000, 999999).toString();
+    const otpExpiresIn = new Date(Date.now() + 5 * 60 * 1000);
 
     // Lưu OTP và thời gian hết hạn vào user trong database
     user.otp = otp;
@@ -104,6 +102,20 @@ class AuthService {
     user.otpExpiresIn = null; // Xóa thời gian hết hạn OTP
     await user.save();
     console.log(`Mật khẩu của ${email} đã được thay đổi thành công.`);
+  }
+
+  // Hàm lấy danh sách tất cả user
+  async getAllUsers() {
+    try {
+      const users = await User.find()
+        .select('username email _id') // Chỉ lấy các trường cần thiết
+        .lean(); // Trả về plain object để tăng hiệu suất
+
+      return users;
+    } catch (error) {
+      console.error('Lỗi khi lấy danh sách user:', error);
+      throw new Error('Không thể lấy danh sách user');
+    }
   }
 }
 

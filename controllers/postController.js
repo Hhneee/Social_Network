@@ -55,6 +55,7 @@ const getPosts = async (req, res) => {
     }
 }
 
+
 const getPostComments = async (req, res) => {
     try {
       const { postId } = req.params;

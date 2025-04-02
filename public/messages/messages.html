@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Application</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f0f2f5;
+    }
+    .chat-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      height: 500px;
+    }
+    .user-list {
+      width: 30%;
+      border-right: 1px solid #ddd;
+      overflow-y: auto;
+    }
+    .user-item {
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+    .user-item:hover {
+      background-color: #f5f5f5;
+    }
+    .user-item.active {
+      background-color: #e9ecef;
+    }
+    .chat-section {
+      width: 70%;
+      display: flex;
+      flex-direction: column;
+    }
+    .chat-header {
+      background-color: #075e54;
+      color: white;
+      padding: 10px;
+      text-align: center;
+    }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    .message {
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+    }
+    .message.sent {
+      align-items: flex-end;
+    }
+    .message.received {
+      align-items: flex-start;
+    }
+    .message-content {
+      max-width: 60%;
+      padding: 10px;
+      border-radius: 10px;
+      background-color: #dcf8c6;
+    }
+    .message.received .message-content {
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+    }
+    .message img, .message video {
+      max-width: 100%;
+      border-radius: 5px;
+    }
+    .message-time {
+      font-size: 12px;
+      color: #888;
+      margin-top: 5px;
+    }
+    .chat-input {
+      display: flex;
+      padding: 10px;
+      border-top: 1px solid #ddd;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      outline: none;
+    }
+    .chat-input button {
+      padding: 10px 20px;
+      margin-left: 10px;
+      background-color: #075e54;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    .chat-input button:hover {
+      background-color: #054d44;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="user-list" id="user-list">
+      <!-- Danh sách user sẽ được thêm động bằng JavaScript -->
+    </div>
+    <div class="chat-section">
+      <div class="chat-header">
+        <h2>Chat với bạn bè</h2>
+      </div>
+      <div class="chat-messages" id="message-list">
+        <!-- Tin nhắn sẽ được thêm động bằng JavaScript -->
+      </div>
+      <div class="chat-input">
+        <input type="text" id="message-input" placeholder="Nhập tin nhắn...">
+        <button onclick="sendMessage()">Gửi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Thêm Socket.IO client -->
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script>
+    let selectedUserId = null;
+    let currentUserId = null;
+    const TOKEN = localStorage.getItem('token') || 'your_reset_secret_key';
+    let socket = null; // Biến lưu kết nối WebSocket
+
+    function getUserIdFromToken(token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        console.log('Token payload:', payload);
+        return payload._id;
+      } catch (error) {
+        console.error('Lỗi khi giải mã token:', error);
+        return null;
+      }
+    }
+
+    async function getCurrentUser() {
+      currentUserId = getUserIdFromToken(TOKEN);
+      console.log('Current User ID:', currentUserId);
+      if (!currentUserId) {
+        console.error('Không tìm thấy userId trong token');
+      }
+      return currentUserId;
+    }
+
+    async function fetchUsers() {
+      try {
+        console.log('Fetching users with token:', TOKEN);
+        const response = await fetch('http://localhost:5000/api/auth/users', {
+          headers: {
+            'Authorization': `Bearer ${TOKEN}`,
+          },
+        });
+        const result = await response.json();
+        console.log('API Response:', result);
+        if (result.success) {
+          return result.data;
+        } else {
+          console.error('Lỗi từ server:', result.message || result.error);
+          return [];
+        }
+      } catch (error) {
+        console.error('Lỗi khi lấy danh sách user:', error);
+        return [];
+      }
+    }
+
+    function selectUser(userElement, userId) {
+      if (!userId) {
+        console.error('Không có userId để chọn user');
+        return;
+      }
+
+      const activeUser = document.querySelector('.user-item.active');
+      if (activeUser) {
+        activeUser.classList.remove('active');
+      }
+      userElement.classList.add('active');
+      selectedUserId = userId;
+      console.log('User selected - Selected User ID:', selectedUserId);
+      displayMessages(selectedUserId);
+    }
+
+    async function displayUsers() {
+      const userList = document.getElementById('user-list');
+      if (!userList) {
+        console.error('Không tìm thấy phần tử user-list trong DOM');
+        return;
+      }
+      userList.innerHTML = '';
+      const users = await fetchUsers();
+      console.log('Users fetched:', users);
+
+      if (users.length === 0) {
+        userList.innerHTML = '<p>Không có người dùng nào để hiển thị</p>';
+        return;
+      }
+
+      users.forEach(user => {
+        if (!user.id) {
+          console.error('User không có _id:', user);
+          return;
+        }
+        if (user.id !== currentUserId) {
+          const userDiv = document.createElement('div');
+          userDiv.classList.add('user-item');
+          userDiv.textContent = user.username || user.email;
+          userDiv.dataset.userId = user.id;
+          console.log('Appending user:', user.username);
+
+          userDiv.addEventListener('click', () => {
+            selectUser(userDiv, user.id);
+          });
+
+          userList.appendChild(userDiv);
+        }
+      });
+    }
+
+    function displayMessage(message) {
+      const messageList = document.getElementById('message-list');
+      if (!messageList) {
+        console.error('Không tìm thấy phần tử message-list trong DOM');
+        return;
+      }
+
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('message', message.isSent ? 'sent' : 'received');
+
+      const contentDiv = document.createElement('div');
+      contentDiv.classList.add('message-content');
+      contentDiv.textContent = message.content;
+
+      if (message.media && message.media.length > 0) {
+        message.media.forEach(media => {
+          if (media.type === 'image') {
+            const img = document.createElement('img');
+            img.src = media.url;
+            contentDiv.appendChild(img);
+          } else if (media.type === 'video') {
+            const video = document.createElement('video');
+            video.src = media.url;
+            video.controls = true;
+            contentDiv.appendChild(video);
+          }
+        });
+      }
+
+      const timeDiv = document.createElement('div');
+      timeDiv.classList.add('message-time');
+      timeDiv.textContent = new Date(message.createdAt).toLocaleTimeString();
+
+      messageDiv.appendChild(contentDiv);
+      messageDiv.appendChild(timeDiv);
+      messageList.appendChild(messageDiv);
+
+      messageList.scrollTop = messageList.scrollHeight;
+    }
+
+    async function displayMessages(userId) {
+      if (!currentUserId) {
+        console.error('Chưa có currentUserId');
+        return;
+      }
+      if (!userId) {
+        console.error('Không có userId để lấy tin nhắn');
+        const messageList = document.getElementById('message-list');
+        if (messageList) {
+          messageList.innerHTML = '<p>Vui lòng chọn một người dùng để xem tin nhắn</p>';
+        }
+        return;
+      }
+      const messageList = document.getElementById('message-list');
+      if (!messageList) {
+        console.error('Không tìm thấy phần tử message-list trong DOM');
+        return;
+      }
+      messageList.innerHTML = '';
+
+      try {
+        console.log('Fetching messages for user:', userId);
+        const response = await fetch(`http://localhost:5000/api/messages/user/${userId}`, {
+          headers: {
+            'Authorization': `Bearer ${TOKEN}`,
+          },
+        });
+        const result = await response.json();
+        console.log('Messages API Response:', result);
+
+        if (result.success) {
+          result.data.forEach(msg => {
+            displayMessage({
+              content: msg.content,
+              isSent: msg.sender._id === currentUserId,
+              createdAt: msg.createdAt,
+              media: msg.media || [],
+            });
+          });
+        } else {
+          console.error('Lỗi từ server:', result.message || result.error);
+          messageList.innerHTML = '<p>Không có tin nhắn nào</p>';
+        }
+      } catch (error) {
+        console.error('Lỗi khi tải tin nhắn:', error);
+        messageList.innerHTML = '<p>Lỗi khi tải tin nhắn</p>';
+      }
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('message-input');
+      const content = input.value.trim();
+
+      console.log('Current User ID:', currentUserId);
+      console.log('Selected User ID:', selectedUserId);
+      console.log('Message content:', content);
+
+      if (!content) {
+        console.error('Nội dung tin nhắn không được để trống');
+        return;
+      }
+      if (!selectedUserId) {
+        console.error('Vui lòng chọn một người dùng để gửi tin nhắn');
+        return;
+      }
+      if (!currentUserId) {
+        console.error('Không xác định được người gửi - Vui lòng đăng nhập lại');
+        return;
+      }
+
+      const message = {
+        receiverId: selectedUserId,
+        content,
+        media: [],
+      };
+
+      try {
+        console.log('Sending message:', message);
+        const response = await fetch('http://localhost:5000/api/messages/send', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${TOKEN}`,
+          },
+          body: JSON.stringify(message),
+        });
+        const result = await response.json();
+        console.log('Send Message Response:', result);
+
+        if (result.success) {
+          input.value = '';
+          displayMessage({
+            content: result.data.content,
+            isSent: true,
+            createdAt: result.data.createdAt,
+            media: result.data.media || [],
+          });
+        } else {
+          console.error('Lỗi từ server:', result.message);
+        }
+      } catch (error) {
+        console.error('Lỗi khi gửi tin nhắn:', error);
+      }
+    }
+
+    async function init() {
+      await getCurrentUser();
+      if (!currentUserId) {
+        console.error('Không thể lấy thông tin người dùng - Vui lòng đăng nhập');
+        document.body.innerHTML = '<p>Vui lòng đăng nhập để tiếp tục</p>';
+        return;
+      }
+
+      // Kết nối với WebSocket server
+      socket = io('http://localhost:5000');
+      socket.on('connect', () => {
+        console.log('Connected to WebSocket server');
+        socket.emit('register', currentUserId);
+      });
+
+      socket.on('newMessage', (message) => {
+        console.log('New message received:', message);
+        if (selectedUserId === message.senderId) {
+          displayMessage(message);
+        }
+      });
+
+      await displayUsers();
+      const firstUser = document.querySelector('.user-item');
+      if (firstUser) {
+        firstUser.click();
+      } else {
+        console.warn('Không có user nào trong danh sách để chọn');
+        const messageList = document.getElementById('message-list');
+        if (messageList) {
+          messageList.innerHTML = '<p>Không có người dùng nào để hiển thị tin nhắn</p>';
+        }
+      }
+
+      const sendButton = document.querySelector('.chat-input button');
+      if (sendButton) {
+        sendButton.addEventListener('click', sendMessage);
+      } else {
+        console.error('Không tìm thấy nút gửi trong DOM');
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

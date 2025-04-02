@@ -10,19 +10,12 @@ body {
 .main-content {
   margin-top: 70px;
   padding: 20px;
-}
-
-.post-list {
-  max-width: 800px;
-  margin: 0 auto;
-  background-color: #faf6f6;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  max-width: 650px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .post {
-  border: 1px solid #707070;
   border-radius: 8px;
   padding: 15px;
   margin-bottom: 20px;
@@ -182,6 +175,12 @@ body {
   background-color: #f5f5f5;
   border-radius: 5px;
   font-size: 14px;
+}
+.comment-section img {
+  max-width: 20px;
+  height: auto;
+  border-radius: 5px;
+  margin-right: 5px;
 }
 
 .comment-section p strong {
