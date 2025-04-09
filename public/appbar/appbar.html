@@ -1,17 +1,26 @@
-  <div class="appbar">
-      <div class="appbar-left">
-        <h1 class="appbar-logo">MySocial</h1>
+<div class="appbar">
+  <div class="appbar-left">
+      <h1 class="appbar-logo">MySocial</h1>
+  </div>
+  <div class="appbar-center">
+      <div class="search-form">
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Tìm kiếm người dùng..." 
+            autocomplete="off" 
+            oninput="searchUsers()" 
+          >
+          <button type="button" onclick="searchUsers()">Tìm kiếm</button>
+          <!-- Container để hiển thị kết quả tìm kiếm -->
+          <div id="search-results" class="search-results-dropdown" style="display: none;"></div>
       </div>
-      <div class="appbar-center">
-        <div class="search-form">
-          <input type="text" id="searchInput" placeholder="Tìm kiếm...">
-          <button onclick="searchPosts()">Tìm kiếm</button>
-        </div>
-      </div>
-      <div class="appbar-right">
-        <a href="/newfeed/newfeed.html" class="appbar-link">Trang chủ</a>
-        <a href="/post/post.html" class="appbar-link">Đăng bài</a>
-        <a href="/messages/messages.html" class="appbar-link">Tin nhắn</a>
-        <a href="#" class="appbar-link" onclick="logout()">Đăng xuất</a>
-      </div>
-    </div>
+  </div>
+  <div class="appbar-right">
+      <a href="/newfeed/newfeed.html" class="appbar-link">Trang chủ</a>
+      <a href="/post/post.html" class="appbar-link">Đăng bài</a>
+      <a href="/messages/messages.html" class="appbar-link">Tin nhắn</a>
+      <a href="/notifications/notification.html" class="appbar-link">Thông báo</a>
+      <a href="#" class="appbar-link" onclick="logout()">Đăng xuất</a>
+  </div>
+</div>

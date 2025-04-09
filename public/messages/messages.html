@@ -319,60 +319,56 @@
     }
 
     async function sendMessage() {
-      const input = document.getElementById('message-input');
-      const content = input.value.trim();
+  const input = document.getElementById('message-input');
+  const sendButton = document.querySelector('.chat-input button');
+  const content = input.value.trim();
 
-      console.log('Current User ID:', currentUserId);
-      console.log('Selected User ID:', selectedUserId);
-      console.log('Message content:', content);
+  if (!content || !selectedUserId || !currentUserId) {
+    console.error('Thiếu thông tin để gửi tin nhắn');
+    return;
+  }
 
-      if (!content) {
-        console.error('Nội dung tin nhắn không được để trống');
-        return;
-      }
-      if (!selectedUserId) {
-        console.error('Vui lòng chọn một người dùng để gửi tin nhắn');
-        return;
-      }
-      if (!currentUserId) {
-        console.error('Không xác định được người gửi - Vui lòng đăng nhập lại');
-        return;
-      }
+  // Vô hiệu hóa nút gửi
+  sendButton.disabled = true;
 
-      const message = {
-        receiverId: selectedUserId,
-        content,
-        media: [],
-      };
+  const message = {
+    senderId: currentUserId, 
+    receiverId: selectedUserId,
+    content,
+    media: [],
+  };
 
-      try {
-        console.log('Sending message:', message);
-        const response = await fetch('http://localhost:5000/api/messages/send', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${TOKEN}`,
-          },
-          body: JSON.stringify(message),
-        });
-        const result = await response.json();
-        console.log('Send Message Response:', result);
+  try {
+    console.log('Sending message:', message);
+    const response = await fetch('http://localhost:5000/api/messages/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${TOKEN}`,
+      },
+      body: JSON.stringify(message),
+    });
+    const result = await response.json();
+    console.log('Send Message Response:', result);
 
-        if (result.success) {
-          input.value = '';
-          displayMessage({
-            content: result.data.content,
-            isSent: true,
-            createdAt: result.data.createdAt,
-            media: result.data.media || [],
-          });
-        } else {
-          console.error('Lỗi từ server:', result.message);
-        }
-      } catch (error) {
-        console.error('Lỗi khi gửi tin nhắn:', error);
-      }
+    if (result.success) {
+      input.value = '';
+      displayMessage({
+        content: result.data.content,
+        isSent: true,
+        createdAt: result.data.createdAt,
+        media: result.data.media || [],
+      });
+    } else {
+      console.error('Lỗi từ server:', result.message);
     }
+  } catch (error) {
+    console.error('Lỗi khi gửi tin nhắn:', error);
+  } finally {
+    // Bật lại nút gửi sau khi hoàn tất
+    sendButton.disabled = false;
+  }
+}
 
     async function init() {
       await getCurrentUser();
@@ -390,11 +386,25 @@
       });
 
       socket.on('newMessage', (message) => {
-        console.log('New message received:', message);
-        if (selectedUserId === message.senderId) {
-          displayMessage(message);
-        }
-      });
+  console.log('Tin nhắn nhận từ WebSocket:', message);
+
+
+  if (message.senderId !== currentUserId && selectedUserId === message.senderId) {
+    displayMessage({
+      content: message.content,
+      isSent: false,
+      createdAt: message.createdAt,
+      media: message.media || [],
+    });
+  }
+});
+socket.on('sendMessage', (message) => {
+  const { senderId, receiverId } = message;
+  const receiverSocketId = onlineUsers[receiverId];
+  if (receiverSocketId) {
+    io.to(receiverSocketId).emit('newMessage', message);
+  }
+});
 
       await displayUsers();
       const firstUser = document.querySelector('.user-item');

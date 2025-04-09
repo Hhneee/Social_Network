@@ -1,4 +1,6 @@
 const PostService = require('../services/postService');
+const Post = require('../models/postModel');
+const notificationService = require('../services/notificationService');
 
 const createPost = async (req, res) => {
     try {
@@ -12,28 +14,73 @@ const createPost = async (req, res) => {
     }
 };
 
-const likePost = async (req, res) => {
-    try{
-        const {postId} = req.params;
-        const userId = req.user._id;
-        const post = await PostService.likePost(userId, postId);
-        res.status(200).json({message: 'Bài viết đã được thích', post});
-    }catch(error){
-        res.status(400).json({message: error.message});
+const toggleLike = async (postId, userId) => {
+    const post = await Post.findById(postId);
+    if (!post) return false;
+  
+    const alreadyLiked = post.likes.includes(userId);
+  
+    if (alreadyLiked) {
+      post.likes = post.likes.filter(id => id.toString() !== userId.toString());
+    } else {
+      post.likes.push(userId);
     }
-};
-
-const commentPost = async (req, res) => {
-    try{
-        const {postId} = req.params;
-        const {content} = req.body;
-        const userId = req.user._id;
-        const post = await PostService.commentPost(userId, postId, {content});
-        res.status(200).json({message: 'Bình luận đã được thêm', post});
-    }catch(error){
-        res.status(400).json({message: error.message});
-    }
-};
+  
+    await post.save();
+    return !alreadyLiked;
+  };
+  // Ví dụ: likePostController.js
+  const likePost = async (req, res) => {
+      const { postId } = req.params;
+      const userId = req.user._id;
+    
+      // Populate user để truy cập được post.user._id
+      const post = await Post.findById(postId).populate('user');
+      if (!post) return res.status(404).json({ message: 'Không tìm thấy bài viết' });
+    
+      const liked = await toggleLike(postId, userId);
+    
+      // post.user là người tạo bài viết
+      if (liked && userId.toString() !== post.user._id.toString()) {
+        await notificationService.createNotification({
+          recipient: post.user._id,
+          sender: userId,
+          type: 'like',
+          message: `${req.user.username} đã thích bài viết của bạn.`,
+          link: `/posts/${postId}`,
+        });
+      }
+    
+      res.json({ success: true, liked });
+    };
+    
+    const commentPost = async (req, res) => {
+        try {
+            const { postId } = req.params;
+            const { content } = req.body;
+            const userId = req.user._id;
+    
+            const post = await PostService.commentPost(userId, postId, { content });
+    
+            const fullPost = await Post.findById(postId).populate('user');
+            console.log('>> fullPost.user:', fullPost.user);
+    
+            if (userId.toString() !== fullPost.user._id.toString()) {
+                await notificationService.createNotification({
+                    recipient: fullPost.user._id,
+                    sender: userId,
+                    type: 'comment',
+                    message: `${req.user.username} đã bình luận về bài viết của bạn.`,
+                    link: `/posts/${postId}`,
+                });
+            }
+    
+            res.status(200).json({ message: 'Bình luận đã được thêm', post });
+        } catch (error) {
+            res.status(400).json({ message: error.message });
+        }
+    };
+      
 
 const sharePost = async (req, res) => {
     try{

@@ -1,3 +1,4 @@
+// services/authService.js
 const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
@@ -105,10 +106,16 @@ class AuthService {
   }
 
   // Hàm lấy danh sách tất cả user
-  async getAllUsers() {
+  async getAllUsers(query = '') {
     try {
-      const users = await User.find()
-        .select('username email _id') // Chỉ lấy các trường cần thiết
+      const users = await User.find({
+        $or: [
+          { username: { $regex: query, $options: 'i' } },
+          { email: { $regex: query, $options: 'i' } },
+          { fullName: { $regex: query, $options: 'i' } }
+        ]
+      })
+        .select('username email fullName _id') // Chỉ lấy các trường cần thiết
         .lean(); // Trả về plain object để tăng hiệu suất
 
       return users;
@@ -117,6 +124,26 @@ class AuthService {
       throw new Error('Không thể lấy danh sách user');
     }
   }
+
+  // Hàm lấy user theo username (THÊM VÀO CLASS)
+  async getAllUsers(query = '') {
+    try {
+      const users = await User.find({
+        $or: [
+          { username: { $regex: query, $options: 'i' } },
+          { email: { $regex: query, $options: 'i' } },
+          { fullName: { $regex: query, $options: 'i' } }
+        ]
+      })
+        .select('username email fullName _id')
+        .lean();
+      return users;
+    } catch (error) {
+      console.error('Lỗi khi lấy danh sách user:', error);
+      throw new Error('Không thể lấy danh sách user');
+    }
+  }
 }
 
+// Export instance của class AuthService
 module.exports = new AuthService();

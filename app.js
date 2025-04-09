@@ -10,7 +10,8 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const postRoutes = require('./routes/postRoutes');
 const messagesRoutes = require('./routes/messagesRoutes');
-
+const notificationRouter = require('./routes/notificationRoutes');
+// const commentRoutes = require('./routes/commentRoutes');
 const app = express();
 const server = http.createServer(app); // Tạo server HTTP từ app để dùng với Socket.IO
 const io = new Server(server, {
@@ -61,7 +62,9 @@ app.set('userSockets', userSockets);
 // Định nghĩa các route cho API authentication
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postRoutes);
+// app.use('/api/comments', commentRoutes);
 app.use('/api/messages', messagesRoutes);
+app.use('/api/notifications', notificationRouter);
 
 // Route phục vụ tệp index.html tại đường dẫn gốc
 app.get('/', (req, res) => {

@@ -1,0 +1,135 @@
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 80px auto 20px auto; /* Để lại khoảng trống cho appbar */
+      padding: 20px;
+    }
+
+    h2 {
+      color: #333;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .notification-list {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 10px;
+    }
+
+    .notification-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      transition: background-color 0.3s;
+    }
+
+    .notification-item:last-child {
+      border-bottom: none;
+    }
+
+    .notification-item.unread {
+      background-color: #f0f8ff;
+    }
+
+    .notification-item:hover {
+      background-color: #f9f9f9;
+    }
+
+    .notification-content {
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .notification-content p {
+      margin: 0;
+      color: #333;
+    }
+
+    .notification-content .time {
+      font-size: 12px;
+      color: #999;
+    }
+
+    .notification-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .notification-actions button {
+      padding: 5px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background-color 0.3s;
+    }
+
+    .notification-actions .read-btn {
+      background-color: #4ecdc4;
+      color: white;
+    }
+
+    .notification-actions .read-btn:hover {
+      background-color: #45b7aa;
+    }
+
+    .notification-actions .delete-btn {
+      background-color: #ff6b6b;
+      color: white;
+    }
+
+    .notification-actions .delete-btn:hover {
+      background-color: #e55a5a;
+    }
+
+    .no-notifications {
+      text-align: center;
+      color: #999;
+      padding: 20px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .container {
+        margin: 60px 10px 10px 10px;
+        padding: 10px;
+      }
+
+      .notification-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .notification-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+    }
+    .mark-all-read-btn {
+        display: block;
+        margin: 10px auto;
+        padding: 8px 16px;
+        background-color: #4ecdc4;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s;
+      }
+      
+      .mark-all-read-btn:hover {
+        background-color: #45b7aa;
+      }
