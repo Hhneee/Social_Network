@@ -195,31 +195,26 @@ document.getElementById('forgot').addEventListener('submit', async (e) => {
   }
 });
 
-// Xử lý đặt lại mật khẩu (THÊM MỚI)
+// Xử lý đặt lại mật khẩu
 document.getElementById('reset').addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const email = document.getElementById('reset-email').value.trim();
+  const email = document.getElementById('forgot-email').value.trim();
   const otp = document.getElementById('reset-otp').value.trim();
   const newPassword = document.getElementById('reset-password').value.trim();
+  const confirmPassword = document.getElementById('reset-confirm-password').value.trim();
   const messageElement = document.getElementById('reset-message');
 
   // Kiểm tra input
-  if (!email || !otp || !newPassword) {
+  if (!email || !otp || !newPassword || !confirmPassword) {
     messageElement.style.color = 'red';
     messageElement.textContent = 'Vui lòng điền đầy đủ thông tin!';
     return;
   }
 
-  if (!isValidEmail(email)) {
+  if (newPassword !== confirmPassword) {
     messageElement.style.color = 'red';
-    messageElement.textContent = 'Email không hợp lệ!';
-    return;
-  }
-
-  if (newPassword.length < 6) {
-    messageElement.style.color = 'red';
-    messageElement.textContent = 'Mật khẩu mới phải có ít nhất 6 ký tự!';
+    messageElement.textContent = 'Mật khẩu xác nhận không khớp!';
     return;
   }
 
@@ -236,8 +231,8 @@ document.getElementById('reset').addEventListener('submit', async (e) => {
       messageElement.style.color = 'green';
       messageElement.textContent = data.message || 'Đặt lại mật khẩu thành công!';
       setTimeout(() => {
-        showForm('login-form'); // Chuyển về form đăng nhập
-      }, 1000);
+        window.location.href = data.redirect; // Chuyển về trang gốc
+      }, 2000); // Chờ 2 giây trước khi chuyển hướng
     } else {
       messageElement.style.color = 'red';
       messageElement.textContent = data.message || 'Đặt lại mật khẩu thất bại!';
