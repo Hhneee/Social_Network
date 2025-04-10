@@ -10,7 +10,7 @@ router.post('/:postId/like', auth, postController.likePost);
 router.post('/:postId/comment', auth, postController.commentPost);
 router.post('/:postId/share', auth, postController.sharePost);
 router.get('/:postId/comments', auth, postController.getPostComments);
-
+router.get('/:userId', auth, postController.getUserPosts);
 // Route không yêu cầu xác thực
 router.get('/', postController.getPosts);
 

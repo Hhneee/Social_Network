@@ -1,6 +1,6 @@
 // Định nghĩa URL cơ sở cho API
-const PROFILE_API_ENDPOINT = 'http://localhost:5000/api/profile';
-const POSTS_API_ENDPOINT = 'http://localhost:5000/api/posts';
+const PROFILE_API_ENDPOINT = '/api/profile';
+const POSTS_API_ENDPOINT = '/api/posts';
 
 // Hàm lấy dữ liệu profile từ API
 async function fetchProfileData(userId, token) {
@@ -15,14 +15,12 @@ async function fetchProfileData(userId, token) {
         },
     });
 
-    const responseText = await response.text();
-    console.log('Phản hồi profile từ server:', response.status, responseText);
-
     if (!response.ok) {
-        throw new Error(`Lỗi từ server (profile): ${responseText}`);
+        const errorText = await response.text();
+        throw new Error(`Không thể tải hồ sơ. Mã lỗi: ${response.status}. Chi tiết: ${errorText}`);
     }
 
-    return JSON.parse(responseText);
+    return response.json();
 }
 
 // Hàm lấy dữ liệu bài viết từ API
@@ -38,45 +36,18 @@ async function fetchPostsData(userId, token) {
         },
     });
 
-    const responseText = await response.text();
-    console.log('Phản hồi posts từ server:', response.status, responseText);
-
     if (!response.ok) {
-        throw new Error(`Lỗi từ server (posts): ${responseText}`);
+        const errorText = await response.text();
+        throw new Error(`Không thể tải bài viết. Mã lỗi: ${response.status}. Chi tiết: ${errorText}`);
     }
 
-    return JSON.parse(responseText);
-}
-
-// Hàm kiểm tra thông tin đăng nhập
-function checkAuth() {
-    const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
-
-    console.log('Token từ localStorage:', token);
-    console.log('userId từ localStorage:', userId);
-
-    if (!token || !userId) {
-        console.warn('Thiếu thông tin xác thực:', { token: !!token, userId: !!userId });
-        alert('Vui lòng đăng nhập để tiếp tục!');
-        window.location.replace('/auth.html');
-        return false;
-    }
-
-    if (!/^[0-9a-fA-F]{24}$/.test(userId)) {
-        console.error('userId không đúng định dạng ObjectId:', userId);
-        alert('userId không hợp lệ! Vui lòng kiểm tra lại quá trình đăng nhập.');
-        return false;
-    }
-
-    return { token, userId };
+    return response.json();
 }
 
 // Hàm hiển thị thông tin profile
 function displayProfile(profileData) {
-    console.log('Dữ liệu profile:', profileData);
-
     document.getElementById('profileFullName').textContent = profileData.username || 'Chưa đặt tên';
+    // document.getElementById('profileUsername').textContent = `@${profileData.username}`;
     document.getElementById('profileBio').textContent = profileData.bio || 'Chưa có tiểu sử';
     document.getElementById('followersCount').textContent = profileData.followersCount || 0;
     document.getElementById('followingCount').textContent = profileData.followingCount || 0;
@@ -96,7 +67,7 @@ function displayProfile(profileData) {
         : 'none';
 }
 
-// Hàm hiển thị danh sách bài viết (tích hợp từ newfeed.js)
+// Hàm hiển thị danh sách bài viết
 function displayPosts(posts, userId, token) {
     const container = document.getElementById('postsList');
     if (!container) {
@@ -152,8 +123,15 @@ function displayPosts(posts, userId, token) {
                     </button>
                 </div>
                 <div id="commentForm-${post._id}" class="comment-form">
-                    <textarea id="comment-${post._id}" placeholder="Viết bình luận..."></textarea>
-                    <button onclick="commentPost('${post._id}', '${userId}', '${token}')">Đăng</button>
+                    <div class="comment-form-inner">
+                        <img src="${post.user.avatar || 'https://cbam.edu.vn/wp-content/uploads/2024/10/avatar-fb-mac-dinh-46nlrTXx.jpg'}" class="avatar-comment-form" alt="avatar">
+                        <div class="comment-input-wrapper">
+                            <textarea id="comment-${post._id}" placeholder="Viết bình luận..." rows="1"></textarea>
+                            <button onclick="commentPost('${post._id}', '${userId}', '${token}')">
+                                <i class="fa fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="comment-section" id="comments-${post._id}">
                     ${visibleComments.map(comment => 
@@ -183,7 +161,7 @@ async function likePost(postId, userId, token) {
         });
         const data = await response.json();
         if (response.ok) {
-            initializeProfile(); // Tải lại profile và bài viết
+            loadProfile(); // Tải lại profile và bài viết
         } else {
             button.classList.toggle('liked');
             alert('Lỗi khi thích bài viết: ' + data.message);
@@ -239,7 +217,7 @@ async function commentPost(postId, userId, token) {
         const data = await response.json();
         if (response.ok) {
             document.getElementById(`comment-${postId}`).value = ''; // Xóa textarea
-            initializeProfile(); // Tải lại profile và bài viết
+            loadProfile(); // Tải lại profile và bài viết
         } else {
             alert('Lỗi khi đăng bình luận: ' + data.message);
         }
@@ -257,7 +235,7 @@ async function sharePost(postId, userId, token) {
         });
         const data = await response.json();
         if (response.ok) {
-            initializeProfile(); // Tải lại profile và bài viết
+            loadProfile(); // Tải lại profile và bài viết
         } else {
             alert('Lỗi khi chia sẻ bài viết: ' + data.message);
         }
@@ -266,36 +244,64 @@ async function sharePost(postId, userId, token) {
     }
 }
 
-// Hàm chính để khởi chạy
-async function initializeProfile() {
+// Hàm chính để tải profile và bài viết
+async function loadProfile() {
+    let userId;
+
+    // Lấy userId từ URL: hỗ trợ cả path (/profile/123) và query (/profile?id=123)
+    const pathSegments = window.location.pathname.split('/').filter(Boolean);
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (urlParams.has('id')) {
+        userId = urlParams.get('id'); // Nếu URL là /profile?id=123
+    } else {
+        userId = pathSegments.pop(); // Nếu URL là /profile/123
+    }
+
+    if (!userId) {
+        console.error('Không tìm thấy userId trong URL');
+        document.querySelector('.profile-container').innerHTML = '<p>Không tìm thấy người dùng.</p>';
+        return;
+    }
+
+    console.log('userId:', userId); // Debug: kiểm tra userId
+
     try {
-        const auth = checkAuth();
-        if (!auth) return;
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('Không tìm thấy token. Vui lòng đăng nhập.');
+            window.location.href = '/';
+            return;
+        }
+
+        console.log('Token:', token); // Debug: kiểm tra token
 
         // Lấy dữ liệu profile
-        const profileResult = await fetchProfileData(auth.userId, auth.token);
-        console.log('Kết quả từ API profile:', profileResult);
+        console.log('Fetching profile:', `${PROFILE_API_ENDPOINT}/profile-user/${userId}`);
+        const profileResult = await fetchProfileData(userId, token);
+        console.log('Profile data:', profileResult);
 
         if (profileResult.success && profileResult.data) {
             displayProfile(profileResult.data);
         } else {
-            throw new Error('Dữ liệu profile không hợp lệ');
+            throw new Error('Dữ liệu hồ sơ không hợp lệ');
         }
 
         // Lấy dữ liệu bài viết
-        const postsResult = await fetchPostsData(auth.userId, auth.token);
-        console.log('Kết quả từ API posts:', postsResult);
+        console.log('Fetching posts:', `${POSTS_API_ENDPOINT}/user/${userId}`);
+        const postsResult = await fetchPostsData(userId, token);
+        console.log('Posts data:', postsResult);
 
         if (postsResult.success && postsResult.data) {
-            displayPosts(postsResult.data, auth.userId, auth.token);
+            displayPosts(postsResult.data, userId, token);
         } else {
             throw new Error('Dữ liệu bài viết không hợp lệ');
         }
     } catch (error) {
-        console.error('Lỗi trong quá trình tải profile hoặc posts:', error);
-        alert(`Không thể tải dữ liệu: ${error.message}`);
+        console.error('Lỗi khi tải trang cá nhân hoặc bài viết:', error);
+        document.querySelector('.profile-container').innerHTML = '<p>Không thể tải hồ sơ người dùng.</p>';
     }
 }
 
 // Khởi động khi DOM sẵn sàng
-window.addEventListener('load', initializeProfile);
+document.addEventListener('DOMContentLoaded', loadProfile);

@@ -103,6 +103,27 @@ const getPosts = async (req, res) => {
 }
 
 
+const getUserPosts = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+
+        // Tìm tất cả bài viết của userId
+        const posts = await Post.find({ user: userId })
+            .populate('user', 'username avatar')
+            .populate('comments.user', 'username avatar')
+            .sort({ createdAt: -1 });
+
+        if (!posts || posts.length === 0) {
+            return res.status(200).json({ success: true, data: [], message: 'Không có bài viết nào' });
+        }
+
+        res.status(200).json({ success: true, data: posts });
+    } catch (error) {
+        console.error('Lỗi khi lấy bài viết của người dùng:', error);
+        res.status(500).json({ success: false, message: 'Lỗi server khi lấy bài viết' });
+    }
+};
+
 const getPostComments = async (req, res) => {
     try {
       const { postId } = req.params;
@@ -113,4 +134,4 @@ const getPostComments = async (req, res) => {
     }
   };
   
-module.exports = { createPost, likePost, commentPost, sharePost, getPosts, getPostComments };
+module.exports = { createPost, likePost, commentPost, sharePost, getPosts, getPostComments, getUserPosts };

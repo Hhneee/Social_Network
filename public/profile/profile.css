@@ -3,83 +3,319 @@ body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f6f8;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
 }
 
 /* Container tổng */
 .profile-container {
-    max-width: 800px;
-    margin: 0 auto;
+    max-width: 900px;
+    margin: 40px auto;
     padding: 20px;
 }
 
 /* Ảnh bìa */
 .cover-photo {
     width: 100%;
-    height: 200px;
-    background-color: #d0d7de;
+    height: 250px;
+    background: linear-gradient(120deg, #667eea 0%, #764ba2 100%);
     background-size: cover;
     background-position: center;
-    border-radius: 10px;
-    margin-bottom: -60px;
+    border-radius: 16px 16px 0 0;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: -70px;
+    transition: all 0.3s ease;
+}
+
+.cover-photo:hover {
+    transform: scale(1.02);
 }
 
 /* Card chính */
 .profile-card {
-    background-color: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+    backdrop-filter: blur(4px);
     text-align: center;
     position: relative;
+    transition: transform 0.3s ease;
+}
+
+.profile-card:hover {
+    transform: translateY(-5px);
 }
 
 /* Avatar */
 .avatar {
-    width: 120px;
-    height: 120px;
+    width: 140px;
+    height: 140px;
     object-fit: cover;
     border-radius: 50%;
-    border: 4px solid white;
+    border: 5px solid white;
     position: absolute;
-    top: -60px;
+    top: -70px;
     left: 50%;
     transform: translateX(-50%);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.avatar:hover {
+    transform: translateX(-50%) scale(1.05);
 }
 
 /* Tên và thông tin */
 h1 {
-    margin-top: 70px;
-    font-size: 26px;
-    font-weight: 600;
+    margin-top: 80px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a1a;
+    background: linear-gradient(45deg, #2c3e50, #3498db);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
 .username {
-    color: #666;
-    margin-bottom: 10px;
+    color: #6b7280;
+    margin-bottom: 12px;
+    font-size: 16px;
+    letter-spacing: 0.5px;
 }
 
 .status {
     font-style: italic;
-    color: #999;
+    color: #9ca3af;
+    font-size: 14px;
+    margin-bottom: 15px;
 }
 
 .bio {
-    margin: 10px 0;
+    margin: 15px 0;
     font-weight: 300;
+    color: #4b5563;
+    line-height: 1.6;
 }
 
 /* Bố cục thông tin chi tiết */
 .info-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 15px;
-    margin-top: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 25px;
     text-align: left;
 }
 
 .info-grid div {
-    background-color: #f9fafb;
-    padding: 10px 15px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    padding: 15px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(229, 231, 235, 0.5);
+    transition: all 0.3s ease;
+}
+
+.info-grid div:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border-color: #dbeafe;
+}
+
+/* Phần bài viết - điều chỉnh giống newfeed.css */
+.posts-list {
+    margin-top: 20px;
+}
+
+.posts-list .post {
     border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #fafafa;
+    transition: box-shadow 0.3s ease;
+}
+
+.posts-list .post:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.postimage {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.postimage .avatar {
+    max-width: 50px;
+    height: auto;
+    border-radius: 5px;
+    width: 50px; /* Đảm bảo kích thước giống newfeed */
+    position: static; /* Bỏ position absolute để giống newfeed */
+    transform: none; /* Bỏ transform để giống newfeed */
+    border: none; /* Bỏ border để giống newfeed */
+    box-shadow: none; /* Bỏ shadow để giống newfeed */
+}
+
+.postimage .userandtime {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.userandtime h4 {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.userandtime h6 {
+    margin: 0;
+    font-size: 10px;
+    font-weight: 600;
+    color: #65676b;
+}
+
+.media-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin: 10px 0;
+}
+
+.media-container .media-item {
+    max-width: 300px; /* Giới hạn chiều rộng tối đa */
+    max-height: 300px; /* Giới hạn chiều cao tối đa */
+    width: 100%;
+    height: auto;
+    object-fit: cover; /* Giữ tỷ lệ, cắt phần thừa */
+    border-radius: 5px;
+    display: block;
+}
+
+.media-container .media-item[controls] {
+    object-fit: contain; /* Video hiển thị đầy đủ */
+}
+
+.startline {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #65676b;
+    margin: 10px 0;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 10px;
+}
+
+.post-like {
+    font-weight: 500;
+}
+
+.post-commentshare {
+    font-weight: 500;
+}
+
+.post-actions {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    margin-top: 10px;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 10px;
+}
+
+.post-actions button {
+    background-color: transparent;
+    color: #65676b;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.post-actions button:hover {
+    background-color: #e4e6eb;
+    color: #050505;
+}
+
+.post-actions .like-btn.liked {
+    color: #1877f2; /* Màu xanh khi đã thích */
+}
+
+.comment-form {
+    margin-top: 10px;
+    display: none; /* Ẩn mặc định */
+}
+
+.comment-form.active {
+    display: block; /* Hiển thị khi có class active */
+}
+
+.comment-form textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    resize: none;
+    font-size: 14px;
+    background-color: #f0f2f5;
+}
+
+.comment-form button {
+    background-color: #1877f2;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 5px;
+    font-weight: 600;
+}
+
+.comment-form button:hover {
+    background-color: #1557b0;
+}
+
+.comment-section {
+    margin-top: 10px;
+}
+
+.comment-section p {
+    margin: 5px 0;
+    padding: 8px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.avatar-comment {
+    max-width: 20px;
+    height: auto;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
+.comment-section p strong {
+    color: #333;
+}
+
+.view-more {
+    display: block;
+    margin-top: 10px;
+    color: #65676b;
+    font-size: 14px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.view-more:hover {
+    text-decoration: underline;
 }

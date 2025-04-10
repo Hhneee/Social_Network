@@ -5,6 +5,13 @@ async function loadAppBar() {
     const response = await fetch('/appbar/appbar.html');
     const appbarHtml = await response.text();
     document.body.insertAdjacentHTML('afterbegin', appbarHtml);
+
+    const searchInput = document.querySelector('#searchInput');
+    if (searchInput) {
+      searchInput.addEventListener('input', debouncedSearchUsers);
+    } else {
+      console.error('Không tìm thấy #searchInput trong DOM');
+    }
   } catch (error) {
     console.error('Lỗi khi tải AppBar:', error);
   }
@@ -22,9 +29,9 @@ function debounce(func, wait) {
 // Hàm tìm kiếm người dùng theo từ khóa
 async function searchUsers() {
   const query = document.querySelector('#searchInput').value.trim();
+  const resultsContainer = document.querySelector('#search-results');
+
   if (query.length === 0) {
-    // Ẩn kết quả nếu không có từ khóa
-    const resultsContainer = document.querySelector('#search-results');
     if (resultsContainer) {
       resultsContainer.style.display = 'none';
     }
@@ -39,7 +46,6 @@ async function searchUsers() {
       return;
     }
 
-    // Gọi endpoint /api/auth/users với query parameter q
     const response = await fetch(`/api/auth/users?q=${encodeURIComponent(query)}`, {
       method: 'GET',
       headers: {
@@ -82,38 +88,54 @@ function displaySearchResults(users) {
   resultsContainer.innerHTML = '';
   resultsContainer.style.display = 'block';
 
-  if (!users || users.length === 0) {
+  if (!users || !Array.isArray(users) || users.length === 0) {
     const noResult = document.createElement('div');
     noResult.textContent = 'Không tìm thấy người dùng nào.';
     noResult.style.padding = '8px';
     resultsContainer.appendChild(noResult);
-  } else {
-    users.forEach(user => {
-      const userElement = document.createElement('div');
-      userElement.textContent = `${user.username}`;
-      userElement.style.padding = '8px';
-      userElement.style.cursor = 'pointer';
-      userElement.onclick = () => {
-        window.location.href = `/profile/${user.id}`;
-      };
-      userElement.onmouseover = () => {
-        userElement.style.backgroundColor = '#f0f0f0';
-      };
-      userElement.onmouseout = () => {
-        userElement.style.backgroundColor = 'transparent';
-      };
-      resultsContainer.appendChild(userElement);
-    });
+    return;
   }
 
-  // Ẩn kết quả khi nhấp ra ngoài
-  document.addEventListener('click', function hideResults(event) {
-    if (!resultsContainer.contains(event.target) && !document.querySelector('.search-form').contains(event.target)) {
+  users.forEach((user, index) => {
+    const userElement = document.createElement('div');
+    userElement.textContent = `${user.username || 'Không có username'}`;
+    userElement.style.padding = '8px';
+    userElement.style.cursor = 'pointer';
+
+    userElement.onclick = () => {
+      const userId = user._id || user.id;
+      if (!userId) {
+        console.error(`Không tìm thấy ID cho user tại index ${index}:`, user);
+        return;
+      }
+
+      // Chuyển hướng trực tiếp đến trang cá nhân của người dùng
+      window.location.href = `/appbar/profilesSearch.html?id=${userId}`; // Thay đổi URL nếu cần
       resultsContainer.style.display = 'none';
-    }
-    document.removeEventListener('click', hideResults);
+    };
+
+    userElement.onmouseover = () => {
+      userElement.style.backgroundColor = '#f0f0f0';
+    };
+    userElement.onmouseout = () => {
+      userElement.style.backgroundColor = 'transparent';
+    };
+
+    resultsContainer.appendChild(userElement);
   });
 }
+
+// Ẩn kết quả khi nhấp ra ngoài
+document.addEventListener('click', function hideResults(event) {
+  const resultsContainer = document.querySelector('#search-results');
+  if (
+    resultsContainer &&
+    !resultsContainer.contains(event.target) &&
+    !document.querySelector('.search-form')?.contains(event.target)
+  ) {
+    resultsContainer.style.display = 'none';
+  }
+});
 
 document.addEventListener('DOMContentLoaded', loadAppBar);
 
