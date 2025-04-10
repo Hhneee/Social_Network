@@ -1,5 +1,11 @@
 // public/post/post.js
 const token = localStorage.getItem('token'); // Giả sử token được lưu sau khi đăng nhập
+// Kiểm tra và hiển thị token trong console
+if (token) {
+  console.log('Token:', token);
+} else {
+  console.log('Token không tồn tại trong localStorage.');
+}
 const mediaList = [];
 
 // Thêm media vào danh sách tạm
@@ -33,14 +39,22 @@ async function createPost() {
   const content = document.getElementById('postContent').value;
   if (!content) return alert('Vui lòng nhập nội dung!');
 
+  // Lấy token từ localStorage
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Bạn cần đăng nhập để đăng bài!');
+    window.location.href = '/auth.html'; // Chuyển hướng đến trang đăng nhập nếu không có token
+    return;
+  }
+
   try {
     const response = await fetch('/api/posts/create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        'Authorization': `Bearer ${token}`, // Gửi token trong header Authorization
       },
-      body: JSON.stringify({ content, media: mediaList }), 
+      body: JSON.stringify({ content, media: mediaList }),
     });
 
     const data = await response.json();
@@ -50,9 +64,10 @@ async function createPost() {
       mediaList.length = 0; // Xóa danh sách media tạm
       renderMediaPreview();
     } else {
-      alert(data.message);
+      alert(data.message || 'Đăng bài thất bại!');
     }
   } catch (error) {
+    console.error('Lỗi khi đăng bài:', error);
     alert('Có lỗi xảy ra: ' + error.message);
   }
 }
