@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
+const profileService = require('./profileService');
 
 class AuthService {
   // Hàm xử lý đăng ký
@@ -21,6 +22,8 @@ class AuthService {
     });
 
     console.log('User created:', user);
+     // Tự động tạo profile sau khi tạo user
+     await profileService.createProfile(user);
     return user;
   }
 
@@ -39,7 +42,9 @@ class AuthService {
       expiresIn: '1h',
     });
 
-    return { user, token };
+    const profile = await profileService.getProfileByUsername(user.username);
+
+    return { user, token, profile };
   }
 
   // Hàm gửi mã OTP qua email

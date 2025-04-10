@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="profile.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="profile-container">
+        <div class="cover-photo" id="profileCover"></div>
+
+        <div class="profile-card">
+            <img id="profileAvatar" class="avatar" src="" alt="Avatar" />
+
+            <h1 id="profileFullName"></h1>
+            <p class="username" id="profileUsername"></p>
+            <p id="profileStatus" class="status"></p>
+
+            <p id="profileBio" class="bio"></p>
+
+            <div class="info-grid">
+                <div><strong>Bài viết:</strong> <span id="postsCount"></span></div>
+                <div><strong>Người theo dõi:</strong> <span id="followersCount"></span></div>
+                <div><strong>Đang theo dõi:</strong> <span id="followingCount"></span></div>
+                <div><strong>Bạn bè:</strong> <span id="friendsCount"></span></div>
+                <div><strong>Vị trí:</strong> <span id="profileLocation"></span></div>
+                <div><strong>Giới tính:</strong> <span id="profileGender"></span></div>
+                <div><strong>Ngày sinh:</strong> <span id="profileBirthDate"></span></div>
+            </div>
+
+           
+            <div class="posts-section">
+                <h2>Bài viết</h2>
+                <div id="postsList" class="posts-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="profile.js"></script>
+</body>
+</html>

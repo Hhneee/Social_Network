@@ -48,7 +48,7 @@ const login = async (req, res) => {
         message: 'Vui lòng cung cấp email và password' 
       });
     }
-    const { user, token } = await authService.loginUser({ email, password });
+    const { user, token, profile } = await authService.loginUser({ email, password });
     return res.status(200).json({
       success: true,
       message: 'Đăng nhập thành công',
@@ -58,6 +58,7 @@ const login = async (req, res) => {
         email: user.email 
       },
       token,
+      profile
     });
   } catch (error) {
     console.error('Error in login:', error);

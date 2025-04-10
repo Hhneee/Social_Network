@@ -11,6 +11,8 @@ const authRoutes = require('./routes/authRoutes');
 const postRoutes = require('./routes/postRoutes');
 const messagesRoutes = require('./routes/messagesRoutes');
 const notificationRouter = require('./routes/notificationRoutes');
+const profileRouter = require('./routes/profileRoutes');
+
 // const commentRoutes = require('./routes/commentRoutes');
 const app = express();
 const server = http.createServer(app); // Tạo server HTTP từ app để dùng với Socket.IO
@@ -65,7 +67,7 @@ app.use('/api/posts', postRoutes);
 // app.use('/api/comments', commentRoutes);
 app.use('/api/messages', messagesRoutes);
 app.use('/api/notifications', notificationRouter);
-
+app.use('/api/profile', profileRouter);
 // Route phục vụ tệp index.html tại đường dẫn gốc
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'auth/auth.html'));

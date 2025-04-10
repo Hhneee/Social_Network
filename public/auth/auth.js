@@ -104,23 +104,8 @@ document.getElementById('register').addEventListener('submit', async (e) => {
 // Xử lý đăng nhập
 document.getElementById('login').addEventListener('submit', async (e) => {
   e.preventDefault();
-
-  const email = document.getElementById('login-email').value.trim();
-  const password = document.getElementById('login-password').value.trim();
-  const messageElement = document.getElementById('login-message');
-
-  // Kiểm tra input
-  if (!email || !password) {
-    messageElement.style.color = 'red';
-    messageElement.textContent = 'Vui lòng nhập email và mật khẩu!';
-    return;
-  }
-
-  if (!isValidEmail(email)) {
-    messageElement.style.color = 'red';
-    messageElement.textContent = 'Email không hợp lệ!';
-    return;
-  }
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
 
   try {
     const response = await fetch('/api/auth/login', {
@@ -128,24 +113,23 @@ document.getElementById('login').addEventListener('submit', async (e) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
     });
-
     const data = await response.json();
 
     if (response.ok) {
-      messageElement.style.color = 'green';
-      messageElement.textContent = 'Đăng nhập thành công!';
+      // Lưu token và userId vào localStorage
       localStorage.setItem('token', data.token);
+      localStorage.setItem('userId', data.user.id); // Thêm dòng này để lưu userId
+
+      document.getElementById('login-message').style.color = 'green';
+      document.getElementById('login-message').textContent = 'Đăng nhập thành công!';
       setTimeout(() => {
-        window.location.href = '/newfeed/newfeed.html'; // Chuyển hướng đến trang newfeed
+        window.location.href = '/newfeed/newfeed.html'; // Đường dẫn đến trang cần chuyển
       }, 1000);
     } else {
-      messageElement.style.color = 'red';
-      messageElement.textContent = data.message || 'Đăng nhập thất bại!';
+      document.getElementById('login-message').textContent = data.message;
     }
   } catch (error) {
-    console.error('Lỗi khi đăng nhập:', error);
-    messageElement.style.color = 'red';
-    messageElement.textContent = 'Đã có lỗi xảy ra. Vui lòng thử lại!';
+    document.getElementById('login-message').textContent = 'Đã có lỗi xảy ra!';
   }
 });
 
