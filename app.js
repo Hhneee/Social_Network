@@ -71,6 +71,10 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'auth/auth.html'));
 });
 
+app.get('/auth/auth.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'auth', 'auth.html'));
+});
+
 // Khởi động server trên PORT được khai báo trong .env hoặc mặc định là 3000
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
