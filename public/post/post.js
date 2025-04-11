@@ -1,22 +1,17 @@
 // public/post/post.js
-const token = localStorage.getItem('token'); // Giả sử token được lưu sau khi đăng nhập
-// Kiểm tra và hiển thị token trong console
-if (token) {
-  console.log('Token:', token);
-} else {
-  console.log('Token không tồn tại trong localStorage.');
-}
+const token = localStorage.getItem('token');
 const mediaList = [];
 
 // Thêm media vào danh sách tạm
 function addMedia() {
-  const url = document.getElementById('mediaUrl').value;
+  const url = document.getElementById('mediaUrl').value.trim();
   const type = document.getElementById('mediaType').value;
   if (url) {
     mediaList.push({ type, url });
-    const preview = document.getElementById('mediaPreview');
-    preview.innerHTML += `<p>${type}: ${url} <button onclick="removeMedia(${mediaList.length - 1})">Xóa</button></p>`;
+    renderMediaPreview();
     document.getElementById('mediaUrl').value = '';
+  } else {
+    alert('Vui lòng nhập URL hợp lệ!');
   }
 }
 
@@ -29,21 +24,39 @@ function removeMedia(index) {
 // Hiển thị lại danh sách media tạm
 function renderMediaPreview() {
   const preview = document.getElementById('mediaPreview');
-  preview.innerHTML = mediaList.map((item, index) => 
-    `<p>${item.type}: ${item.url} <button onclick="removeMedia(${index})">Xóa</button></p>`
-  ).join('');
+  preview.innerHTML = mediaList
+    .map((item, index) => {
+      if (item.type === 'image') {
+        return `
+          <div>
+            <img src="${item.url}" alt="Hình ảnh xem trước">
+            <button onclick="removeMedia(${index})">Xóa</button>
+          </div>`;
+      } else if (item.type === 'video') {
+        return `
+          <div>
+            <video src="${item.url}" controls></video>
+            <button onclick="removeMedia(${index})">Xóa</button>
+          </div>`;
+      }
+      return ''; // Không hiển thị nếu không phải hình ảnh hoặc video
+    })
+    .join('');
 }
 
 // Đăng bài viết
-async function createPost() {
-  const content = document.getElementById('postContent').value;
-  if (!content) return alert('Vui lòng nhập nội dung!');
+async function createPost(event) {
+  event.preventDefault();
 
-  // Lấy token từ localStorage
-  const token = localStorage.getItem('token');
+  const content = document.getElementById('postContent').value.trim();
+  if (!content && mediaList.length === 0) {
+    alert('Vui lòng nhập nội dung hoặc thêm media!');
+    return;
+  }
+
   if (!token) {
     alert('Bạn cần đăng nhập để đăng bài!');
-    window.location.href = '/auth.html'; // Chuyển hướng đến trang đăng nhập nếu không có token
+    window.location.href = '/auth.html';
     return;
   }
 
@@ -52,7 +65,7 @@ async function createPost() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`, // Gửi token trong header Authorization
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ content, media: mediaList }),
     });
@@ -61,7 +74,7 @@ async function createPost() {
     if (response.ok) {
       alert('Đăng bài thành công!');
       document.getElementById('postContent').value = '';
-      mediaList.length = 0; // Xóa danh sách media tạm
+      mediaList.length = 0;
       renderMediaPreview();
     } else {
       alert(data.message || 'Đăng bài thất bại!');
@@ -71,3 +84,5 @@ async function createPost() {
     alert('Có lỗi xảy ra: ' + error.message);
   }
 }
+
+document.getElementById('post-form').addEventListener('submit', createPost);

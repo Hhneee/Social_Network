@@ -1,83 +1,185 @@
 /* public/post/post.css */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f0f2f5;
-    color: #333;
-  }
-  
-  .main-content {
-    margin-top: 70px; /* Khoảng cách để tránh bị AppBar che */
-    padding: 20px;
-  }
-  
-  .post-form {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .post-form h2 {
-    color: #1a73e8;
-    margin-bottom: 15px;
-    text-align: center;
-  }
-  
-  textarea, input[type="text"], select {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-    font-size: 14px;
-  }
-  
-  textarea {
-    resize: vertical;
-  }
-  
-  select {
-    padding: 7px;
-  }
-  
-  button {
-    background-color: #1a73e8;
-    color: white;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-right: 5px;
-    font-size: 14px;
-    transition: background-color 0.3s;
-  }
-  
-  button:hover {
-    background-color: #1557b0;
-  }
-  
-  #mediaPreview {
-    margin: 10px 0;
-  }
-  
-  #mediaPreview p {
-    margin: 5px 0;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-  }
-  
-  #mediaPreview button {
-    background-color: #e74c3c;
-    padding: 4px 8px;
-    margin-left: 10px;
-  }
-  
-  #mediaPreview button:hover {
-    background-color: #c0392b;
-  }
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.post-container {
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  font-size: 24px; /* Tăng kích thước tiêu đề */
+  color: #333;
+  margin-bottom: 30px; /* Tăng khoảng cách giữa tiêu đề và nội dung */
+}
+
+textarea {
+  width: 100%;
+  max-width: 400px; /* Giới hạn chiều rộng tối đa */
+  height: 150px; /* Đặt chiều cao cố định */
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 16px;
+  resize: none;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center; /* Căn giữa nội dung theo chiều ngang */
+  align-items: center; /* Căn giữa nội dung theo chiều dọc */
+  text-align: center; /* Căn giữa nội dung văn bản */
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+}
+
+textarea::placeholder {
+  text-align: center; /* Căn giữa placeholder */
+}
+
+.media-upload {
+  text-align: left;
+  margin-bottom: 20px; /* Tăng khoảng cách */
+}
+
+.media-upload label {
+  font-size: 14px; /* Tăng font-size */
+  color: #555;
+  display: block;
+  margin-bottom: 10px; /* Tăng khoảng cách giữa label và input */
+}
+
+.media-input-group {
+  display: flex;
+  gap: 10px; /* Tăng khoảng cách giữa các thành phần */
+  align-items: center;
+}
+
+.media-input-group input,
+.media-input-group select {
+  flex: 1;
+  padding: 10px; /* Tăng padding */
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px; /* Tăng font-size */
+}
+
+.media-input-group .add-media-btn {
+  background: linear-gradient(135deg, #4caf50, #81c784);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px; /* Tăng padding */
+  cursor: pointer;
+  font-size: 14px; /* Tăng font-size */
+  transition: background 0.3s, transform 0.2s;
+}
+
+.media-input-group .add-media-btn:hover {
+  background: linear-gradient(135deg, #388e3c, #4caf50);
+  transform: scale(1.05);
+}
+
+#mediaPreview {
+  margin-top: 20px; /* Tăng khoảng cách */
+  text-align: left;
+  width: 100%; /* Đảm bảo danh sách chiếm toàn bộ chiều rộng */
+  max-width: 400px; /* Giới hạn chiều rộng tối đa */
+  display: flex;
+  flex-wrap: wrap; /* Cho phép ảnh xuống dòng nếu quá nhiều */
+  gap: 10px; /* Tạo khoảng cách giữa các ảnh */
+}
+
+#mediaPreview p {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f9f9f9;
+  padding: 10px; /* Tăng padding */
+  border-radius: 8px;
+  margin-bottom: 10px; /* Tăng khoảng cách giữa các mục */
+  font-size: 14px; /* Tăng font-size */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Thêm bóng */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#mediaPreview p:hover {
+  transform: scale(1.02); /* Phóng to nhẹ khi hover */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Tăng bóng khi hover */
+}
+
+#mediaPreview img {
+  max-width: 100px; /* Giới hạn chiều rộng ảnh */
+  max-height: 100px; /* Giới hạn chiều cao ảnh */
+  border-radius: 5px; /* Bo góc ảnh */
+  object-fit: cover; /* Đảm bảo ảnh không bị méo */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Thêm bóng cho ảnh */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#mediaPreview img:hover {
+  transform: scale(1.05); /* Phóng to nhẹ khi hover */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Tăng bóng khi hover */
+}
+
+#mediaPreview button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 12px; /* Giảm font-size để nút gọn hơn */
+  transition: background-color 0.3s ease;
+  margin-top: 5px; /* Tạo khoảng cách giữa ảnh và nút */
+}
+
+#mediaPreview button:hover {
+  background-color: #c0392b;
+}
+
+#mediaPreview video {
+  max-width: 100px; /* Giới hạn kích thước hình ảnh hoặc video */
+  max-height: 100px;
+  border-radius: 5px;
+  margin-right: 10px; /* Tạo khoảng cách giữa media và nội dung */
+  object-fit: cover; /* Đảm bảo hình ảnh/video không bị méo */
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #4caf50, #81c784);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 20px; /* Tăng padding */
+  font-size: 16px; /* Tăng font-size */
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.submit-btn:hover {
+  background: linear-gradient(135deg, #388e3c, #4caf50);
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}

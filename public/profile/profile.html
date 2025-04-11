@@ -9,15 +9,17 @@
 </head>
 <body>
     <div class="profile-container">
+        <!-- Ảnh bìa -->
         <div class="cover-photo" id="profileCover"></div>
 
+        <!-- Thẻ thông tin cá nhân -->
         <div class="profile-card">
             <img id="profileAvatar" class="avatar" src="" alt="Ảnh đại diện" />
-
             <h1 id="profileFullName"></h1>
             <p id="profileStatus" class="status"></p>
             <p id="profileBio" class="bio"></p>
 
+            <!-- Thông tin chi tiết -->
             <div class="info-grid">
                 <div><strong>Bài viết:</strong> <span id="postsCount"></span></div>
                 <div><strong>Người theo dõi:</strong> <span id="followersCount"></span></div>
@@ -27,11 +29,12 @@
                 <div><strong>Giới tính:</strong> <span id="profileGender"></span></div>
                 <div><strong>Ngày sinh:</strong> <span id="profileBirthDate"></span></div>
             </div>
+        </div>
 
-            <div class="posts-section">
-                <h2>Bài viết</h2>
-                <div id="postsList" class="posts-list"></div>
-            </div>
+        <!-- Danh sách bài viết -->
+        <div class="posts-section">
+            <h2>Bài viết</h2>
+            <div id="postsList" class="posts-list"></div>
         </div>
     </div>
 
