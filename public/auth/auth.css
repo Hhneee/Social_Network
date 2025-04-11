@@ -11,21 +11,25 @@
 
 /* Body */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Poppins', sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   margin: 0;
   padding: 0;
+  background: linear-gradient(135deg, #667eea, #764ba2);
   overflow: hidden;
 }
 
 /* Container */
 .container {
-  width: 100%;
   max-width: 400px;
   padding: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 25px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  text-align: center;
   position: relative;
   z-index: 1;
 }
@@ -47,29 +51,32 @@ h2 {
 /* Input */
 input {
   width: 100%;
-  padding: 10px;
+  padding: 12px; /* Tăng padding */
   margin: 10px 0;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: 1px solid #e5e7eb; /* Thêm viền nhạt */
+  border-radius: 8px; /* Tăng độ bo góc */
   box-sizing: border-box;
 }
 
 /* Button */
 button {
-  width: 100%;
-  padding: 10px;
-  background-color: #1877f2;
+  background: linear-gradient(135deg, #4ecdc4, #34a0a4);
   color: white;
+  border-radius: 30px;
+  transition: background-color 0.3s, transform 0.2s;
+  width: 100%;
+  padding: 14px; /* Tăng kích thước nút */
   border: none;
-  border-radius: 4px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  font-size: 16px; /* Tăng font-size */
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Thêm bóng */
 }
 
 button:hover {
-  background-color: #165db7;
+  background: #45b7aa;
   transform: translateY(-2px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Paragraph */

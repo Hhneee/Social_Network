@@ -35,17 +35,18 @@ body {
 /* Card chính */
 .profile-card {
     background: rgba(255, 255, 255, 0.95);
-    padding: 40px;
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
-    backdrop-filter: blur(4px);
+    padding: 50px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
     text-align: center;
     position: relative;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .profile-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
 /* Avatar */
@@ -59,18 +60,18 @@ body {
     top: -70px;
     left: 50%;
     transform: translateX(-50%);
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .avatar:hover {
-    transform: translateX(-50%) scale(1.05);
+    transform: translateX(-50%) scale(1.1);
 }
 
 /* Tên và thông tin */
 h1 {
     margin-top: 80px;
-    font-size: 28px;
+    font-size: 32px;
     font-weight: 700;
     color: #1a1a1a;
     background: linear-gradient(45deg, #2c3e50, #3498db);
@@ -110,16 +111,16 @@ h1 {
 }
 
 .info-grid div {
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    padding: 15px 20px;
-    border-radius: 12px;
-    border: 1px solid rgba(229, 231, 235, 0.5);
-    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid rgba(229, 231, 235, 0.7);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .info-grid div:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     border-color: #dbeafe;
 }
 
@@ -129,10 +130,10 @@ h1 {
 }
 
 .posts-list .post {
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 20px;
-    background-color: #fafafa;
+    background-color: #ffffff; /* Đổi nền sang trắng */
+    border: 1px solid #e5e7eb; /* Thêm viền nhạt */
+    padding: 20px; /* Tăng padding */
+    border-radius: 12px; /* Tăng độ bo góc */
     transition: box-shadow 0.3s ease;
 }
 

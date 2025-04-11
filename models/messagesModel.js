@@ -16,12 +16,6 @@ const messageSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  media: [
-    {
-      type: { type: String },
-      url: { type: String },
-    },
-  ],
   createdAt: {
     type: Date,
     default: Date.now,

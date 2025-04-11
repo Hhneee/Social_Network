@@ -3,16 +3,17 @@
   top: 0;
   left: 0;
   width: 100%;
-  background: linear-gradient(45deg, #00A06B, #67BF7F, #85c1e9);
+  background: linear-gradient(90deg, #4caf50, #81c784);
   background-size: 200% 200%;
-  animation: toneChange 8s ease infinite;
+  animation: toneChange 6s ease infinite;
   color: white;
-  padding: 10px 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 1000;
+  font-family: 'Poppins', sans-serif;
 }
 
 @keyframes toneChange {
@@ -27,29 +28,30 @@
 }
 
 .appbar-logo {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 600; /* Sửa từ 6000 thành 600 */
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .appbar-center {
   flex: 2;
   display: flex;
-  justify-content: flex-start; /* Sửa từ left thành flex-start */
+  justify-content: flex-start;
 }
 
 .appbar-right {
   margin-right: 30px;
   display: flex;
-  gap: 20px; /* Thêm khoảng cách giữa các link */
+  gap: 20px;
 }
 
 .appbar-right .appbar-link {
   color: white;
   text-decoration: none;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, transform 0.2s ease;
 }
 
 .appbar-right .appbar-link:hover {
@@ -58,24 +60,25 @@
 }
 
 .search-form {
-  position: relative; /* Thêm để định vị #search-results */
-  width: 100%;
-  max-width: 400px;
-  background-color: #fff;
-  border-radius: 20px;
-  padding: 5px 10px;
+  position: relative;
+  max-width: 450px;
+  background-color: #ffffff;
+  border-radius: 25px;
+  padding: 8px 15px;
   display: flex;
   gap: 10px;
-  align-items: center; /* Sửa từ left thành center */
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .search-form input[type="text"] {
   flex: 1;
-  padding: 8px;
+  padding: 10px;
   border: none;
   border-radius: 20px;
   font-size: 14px;
   outline: none;
+  color: #333;
 }
 
 .search-form input[type="text"]::placeholder {
@@ -83,18 +86,20 @@
 }
 
 .search-form button {
-  background-color: #4ecdc4;
+  background-color: #4caf50;
   color: white;
-  padding: 8px 15px;
+  padding: 10px 20px;
   border: none;
   border-radius: 20px;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.3s;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
 
 .search-form button:hover {
-  background-color: #0d47a1;
+  background-color: #388e3c;
+  transform: scale(1.05);
 }
 
 /* Định dạng cho dropdown kết quả tìm kiếm */
@@ -110,7 +115,7 @@
   max-height: 200px;
   overflow-y: auto;
   z-index: 1000;
-  color: #333; /* Đổi màu chữ để dễ đọc */
+  color: #333;
 }
 
 /* Responsive design */
